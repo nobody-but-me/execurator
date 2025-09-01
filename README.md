@@ -1,5 +1,8 @@
 
-# G25 project
+- Razomentalist - Website;
+- Pigeonhole;
+
+# Razomentalist project
 
 This is an experimental project for learning purposes -- i.e.: it's not meant to be finished or well-coded in anyways. If it comes to become a real application, then this text will be, for sure, changed.
 

@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+#define VERBOSE false
+
 const char *file_to_char(const char *file_path) {
     long buffer_size = 0;
     char *buffer;
