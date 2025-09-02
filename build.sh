@@ -4,5 +4,5 @@
 # building project files.
 
 rm -rf ./out
-gcc -std=c99 -o ./out ../src/main.c
+gcc -std=c99 -o ./out ../src/main.c ../src/parser.c
 

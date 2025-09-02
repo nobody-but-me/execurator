@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include "./include/parser.h"
+
 #define VERBOSE false
 
 const char *file_to_char(const char *file_path) {
@@ -54,6 +56,16 @@ BLANK:
 int handle_client(int client) {
     char buffer[1024];
     read(client, buffer, sizeof(buffer));
+    
+    char *tmp = load_file("../templates/_template.rd");
+    if (!tmp) {
+	printf("[FAILED] : tmp could not be loaded");
+    }
+    const char *_tmp = tmp;
+    RadownValue *main = lexer(&_tmp);
+    printf("[INFO] : test : %s\n", main->para_value);
+    main = lexer(&_tmp);
+    printf("[INFO] : test 2 : %s\n", main->para_value);
     
     const char *templ = file_to_char("../templates/template.html");
     if (templ == NULL) {
