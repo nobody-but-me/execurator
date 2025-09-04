@@ -12,7 +12,8 @@
 
 #define VERBOSE false
 
-const char *file_to_char(const char *file_path) {
+const char *file_to_char(const char *file_path)
+{
     long buffer_size = 0;
     char *buffer;
     FILE *file;
@@ -53,19 +54,40 @@ BLANK:
     return NULL;
 }
 
-int handle_client(int client) {
+const char *translate_content()
+{
+    char *tmp = load_file("../templates/_template.rd"); // temporary file for tests
+    if (!tmp) {
+	printf("[FAILED] : tmp could not be loaded");
+	return NULL;
+    }
+    const char *_tmp = tmp;
+    
+    RadownValue *main = lexer(&_tmp);
+    char *content = "";
+    while (main != NULL) {
+	if (main->type == 0) {
+	    int new_length = sizeof(char) * (strlen(content) + strlen(main->header_value));
+	    content = (char *)malloc(new_length);
+	    sprintf(content, "<h1>%s</h1>", main->header_value);
+	}
+	else if (main->type == 1) {
+	    int new_length = sizeof(char) * (strlen(content) + strlen(main->para_value));
+	    content = (char *)malloc(new_length);
+	    sprintf(content, "<p>%s</p>", main->para_value);
+	}
+    }
+    printf("[INFO] :  Content: %s.\n", content);
+    const char *result = content;
+    return result;
+}
+
+int handle_client(int client)
+{
     char buffer[1024];
     read(client, buffer, sizeof(buffer));
     
-    char *tmp = load_file("../templates/_template.rd");
-    if (!tmp) {
-	printf("[FAILED] : tmp could not be loaded");
-    }
-    const char *_tmp = tmp;
-    RadownValue *main = lexer(&_tmp);
-    printf("[INFO] : test : %s\n", main->para_value);
-    main = lexer(&_tmp);
-    printf("[INFO] : test 2 : %s\n", main->para_value);
+    translate_content();
     
     const char *templ = file_to_char("../templates/template.html");
     if (templ == NULL) {
