@@ -11,6 +11,8 @@
 
 #include "./include/parser.h"
 
+#define PROJECT_PATH "../moc_project/"
+
 // TODO: change this the place of the function below.
 static char *strrep(char *orig, char *rep, char *with)
 {
@@ -44,7 +46,7 @@ static char *strrep(char *orig, char *rep, char *with)
 
 static const char *translate_content()
 {
-    char *tmp = load_file("../templates/_template.rd"); // temporary file for tests
+    char *tmp = load_file(PROJECT_PATH"main.rd");
     if (!tmp) {
 	printf("[FAILED] : tmp could not be loaded");
 	return NULL;

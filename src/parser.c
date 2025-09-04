@@ -50,11 +50,13 @@ BLANK:
     return NULL;
 }
 
-char *load_file(const char *file_path) {
+// NOTE: This functions seems a little out of this script. Perhaps replace it would be a good idea.
+char *load_file(const char *file_path)
+{
     // Code stole from stackoverflow.
     FILE *file = fopen(file_path, "r");
     if (!file) {
-	fprintf(stderr, "[FAILED] : Failed to load file for lexer.\n");
+	fprintf(stderr, "[FAILED] : File could not be recognized or does not exist.\n");
 	return NULL;
     }
     fseek(file, 0, SEEK_END);
