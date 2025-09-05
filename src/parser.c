@@ -24,53 +24,24 @@ static char *read_string(const char **text)
     return result;
 }
 
-// NOTE: It doesn't seem to be the better approach. Perhaps merging all these functions into a monolith one.
-char *read_header(const char **text)
-{
-    if (**text != '[') return NULL;
-    (*text)++;
-    
-    if (strncmp(*text, "header]", 7) == 1)  return NULL;
-    *text += 7;
+static char *r(const char **text, int amount2jump, char *tag) {
+    *text += amount2jump;
     
     char *result = read_string(text);
-    
-    if (strncmp(*text, "[header]", 8) == 0) {
-	(*text) += 8;
-    };
+    if (strncmp(*text, tag, amount2jump) == 0) {
+	(*text) += (amount2jump + 1);
+    }
     return result;
 }
 
-char *read_para(const char **text)
+char *read_content(const char **text)
 {
     if (**text != '[') return NULL;
     (*text)++;
     
-    if (strncmp(*text, "para]", 5) == 1)  return NULL;
-    *text += 5;
-    
-    char *result = read_string(text);
-    
-    if (strncmp(*text, "[para]", 6) == 0) {
-	(*text) += 6;
-    };
-    return result;
-}
-
-char *read_link(const char **text)
-{
-    if (**text != '[') return NULL;
-    (*text)++;
-    
-    if (strncmp(*text, "link]", 5) == 1)  return NULL;
-    *text += 5;
-    
-    char *result = read_string(text);
-    
-    if (strncmp(*text, "[link]", 6) == 0) {
-	(*text) += 6;
-    };
-    return result;
+    if (strncmp(*text, "header]", 7) == 0)    return r(text, 7, "[header]");
+    else if (strncmp(*text, "para]", 5) == 0) return r(text, 5, "[para]");
+    else if (strncmp(*text, "link]", 5) == 0) return r(text, 5, "[link]");
 }
 
 void jump_space(const char ** text)
@@ -88,19 +59,19 @@ RadownValue *parse(const char **text)
     if (strncmp(*text, "[para]", 6) == 0) {
 	RadownValue *value = malloc(sizeof(RadownValue));
 	value->type = TYPE_PARA;
-	value->value = read_para(text);
+	value->value = read_content(text);
 	return value;
     }
     else if (strncmp(*text, "[header]", 8) == 0) {
 	RadownValue *value = malloc(sizeof(RadownValue));
 	value->type = TYPE_HEADER;
-	value->value = read_header(text);
+	value->value = read_content(text);
 	return value;
     }
     else if (strncmp(*text, "[link]", 6) == 0) {
 	RadownValue *value = malloc(sizeof(RadownValue));
 	value->type = TYPE_LINK;
-	value->value = read_link(text);
+	value->value = read_content(text);
 	return value;
     }
     return NULL;
