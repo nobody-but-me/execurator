@@ -14,7 +14,6 @@
 
 #define PROJECT_PATH "../moc_project/"
 
-
 static const char *translate_content()
 {
     char *tmp = load_file(PROJECT_PATH"main.rd");
@@ -23,7 +22,10 @@ static const char *translate_content()
 	return NULL;
     }
     const char *_tmp = tmp;
-    
+    if (_tmp == NULL) {
+	fprintf(stderr, "[FAILED] : template could not be loaded.\n");
+	return NULL;
+    }
     const char *content = lexer(_tmp);
     return content;
 }
@@ -46,7 +48,7 @@ int handle_client(int client)
 	return -1;
     }
     const char *http_header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-    char *html = strrep(templ, "%t", result);
+    char *html = strrep(templ, "[content]", result);
     if (html == NULL) {
 	fprintf(stderr, "[FAILED] : Failed to inject Radown files content into HTML script.\n");
 	close(client);
