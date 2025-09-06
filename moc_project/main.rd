@@ -9,4 +9,4 @@ I can change the files! That's so pretty cool!
 [para]
 Another paragraph
 [para]
-[link]https://asgooffeeasme.neocities.org[link]
+[link=https://asgooffeeasme.neocities.org]my other personal website![link]

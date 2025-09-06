@@ -14,7 +14,6 @@
 static char *read_string(const char **text, const char *tag)
 {
     const char *start = *text;
-    // while (**text != '[' && **text != '\0') {
     while (strncmp(*text, tag, strlen(tag)) && **text != '\0') {
 	(*text)++;
     }
@@ -35,15 +34,44 @@ static char *r(const char **text, const char *tag) {
     return result;
 }
 
-char *read_content(const char **text)
+void read_content(const char **text, RadownValue *value)
 {
-    if (**text != '[') return NULL;
+    if (**text != '[') return;
     (*text)++;
     
-    // not the better code ever... actually, very far from.
-    if (strncmp(*text, "header]",  strlen("header]")) == 0) return r(text, "[header]");
-    else if (strncmp(*text, "para]", strlen("para]")) == 0) return r(text, "[para]");
-    else if (strncmp(*text, "link]", strlen("link]")) == 0) return r(text, "[link]");
+    if (strncmp(*text, "header]", 7) == 0) {
+	value->value = r(text, "[header]");
+	value->type = TYPE_HEADER;
+	return;
+    }
+    else if (strncmp(*text, "para]", 5) == 0) {
+	value->value = r(text, "[para]");
+	value->type = TYPE_PARA;
+	return;
+    }
+    else if (strncmp(*text, "link=", 5) == 0) {
+	*text += 5;
+	const char *start = *text;
+	while (strncmp(*text, "]", strlen("]")) && **text != '\0') {
+	    (*text)++;
+	}
+	size_t link_length = (size_t)(*text - start);
+	char *link = (char*)malloc(link_length + 1);
+	strncpy(link, start, link_length);
+	link[link_length] = '\0';
+	(*text)++;
+	
+	char *v = read_string(text, "[link]");
+	if (strncmp(*text, "[link]", strlen("[link]")) == 0) {
+	    (*text) += strlen("[link]");
+	}
+	char *result = (char*)malloc(link_length + strlen(v) + 2);
+	snprintf(result, (link_length + strlen(v) + 2), "%s|%s", link, v);
+	
+	value->type = TYPE_LINK;
+	value->value = result;
+	return;
+    }
 }
 
 void jump_space(const char ** text)
@@ -58,22 +86,9 @@ RadownValue *parse(const char **text)
 {
     jump_space(text);
     
-    if (strncmp(*text, "[para]", 6) == 0) {
+    if (strncmp(*text, "[", 1) == 0) {
 	RadownValue *value = malloc(sizeof(RadownValue));
-	value->type = TYPE_PARA;
-	value->value = read_content(text);
-	return value;
-    }
-    else if (strncmp(*text, "[header]", 8) == 0) {
-	RadownValue *value = malloc(sizeof(RadownValue));
-	value->type = TYPE_HEADER;
-	value->value = read_content(text);
-	return value;
-    }
-    else if (strncmp(*text, "[link]", 6) == 0) {
-	RadownValue *value = malloc(sizeof(RadownValue));
-	value->type = TYPE_LINK;
-	value->value = read_content(text);
+	read_content(text, value);
 	return value;
     }
     return NULL;
@@ -101,19 +116,22 @@ char *lexer(const char *tmp)
 	    snprintf(_new, length, "<p>%s</p>", main->value);
 	}
 	else if (main->type == TYPE_LINK) {
-	    // TODO: refactor it.
 	    const char *tag = "<a href=''></a>";
-	    size_t length = ((strlen(main->value) * 2) + strlen(tag) + 1);
+	    
+	    const char *link  = strtok(main->value, "|");
+	    const char *value = strtok(NULL, "|");
+	    
+	    size_t length = (strlen(link) + strlen(value) + strlen(tag) + 1);
 	    _new = (char*)malloc(length);
 	    
-	    snprintf(_new, length, "<a href='%s'>%s</a>", main->value, main->value);
+	    snprintf(_new, length, "<a href='%s'>%s</a>", link, value);
 	}
 	size_t total_length = (strlen(_old) + strlen(_new) + 1);
 	content = (char*)malloc(total_length);
 	snprintf(content, total_length, "%s%s", _old, _new);
 	main = parse(&tmp);
     }
-    printf("\n%s\n\n", content);
+    // printf("\n%s\n\n", content);
     free(main);
     return content;
 }
