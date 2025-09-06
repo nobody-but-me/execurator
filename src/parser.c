@@ -49,6 +49,11 @@ void read_content(const char **text, RadownValue *value)
 	value->type = TYPE_PARA;
 	return;
     }
+    else if (strncmp(*text, "image]", 6) == 0) {
+	value->value = r(text, "[image]");
+	value->type = TYPE_IMAGE;
+	return;
+    }
     else if (strncmp(*text, "link=", 5) == 0) {
 	*text += 5;
 	const char *start = *text;
@@ -115,8 +120,15 @@ char *lexer(const char *tmp)
 	    
 	    snprintf(_new, length, "<p>%s</p>", main->value);
 	}
+	else if (main->type == TYPE_IMAGE) {
+	    const char *tag = "<img src=''/>";
+	    size_t length = (strlen(main->value) + strlen(tag) + 1);
+	    _new = (char*)malloc(length);
+	    
+	    snprintf(_new, length, "<img src='%s'/>", main->value);
+	}
 	else if (main->type == TYPE_LINK) {
-	    const char *tag = "<a href=''></a>";
+	    const char *tag = "<a href='' target='_blank'></a>";
 	    
 	    const char *link  = strtok(main->value, "|");
 	    const char *value = strtok(NULL, "|");
@@ -124,7 +136,7 @@ char *lexer(const char *tmp)
 	    size_t length = (strlen(link) + strlen(value) + strlen(tag) + 1);
 	    _new = (char*)malloc(length);
 	    
-	    snprintf(_new, length, "<a href='%s'>%s</a>", link, value);
+	    snprintf(_new, length, "<a href='%s' target='_blank'>%s</a>", link, value);
 	}
 	size_t total_length = (strlen(_old) + strlen(_new) + 1);
 	content = (char*)malloc(total_length);

@@ -4,6 +4,8 @@
 
 typedef enum {
     TYPE_HEADER,
+    TYPE_BUTTON,
+    TYPE_IMAGE,
     TYPE_LINK,
     TYPE_PARA,
 } RadownType;

@@ -21,7 +21,7 @@ And then open the local address http://localhost:4242 in your browser.
  - [x] Load and parse Markdown-like files;
  - [x] Translate Radown files into HTML language;
  - [ ] Load multiple Radown files from project folder;
- - [ ] *Radown*: more "tags", like images and links;
+ - [x] *Radown*: more simple "tags", like images and links;
  - [ ] Multiple paging support;
  - [ ] *Radown* : Capacity to read nested tags;
  - [ ] ;
