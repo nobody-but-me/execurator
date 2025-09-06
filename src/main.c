@@ -14,9 +14,12 @@
 
 #define PROJECT_PATH "../moc_project/"
 
+// TODO: global variable.
+char *current_file = PROJECT_PATH"main.rd";
+
 static const char *translate_content()
 {
-    char *tmp = load_file(PROJECT_PATH"main.rd");
+    char *tmp = load_file(current_file);
     if (!tmp) {
 	printf("[FAILED] : tmp could not be loaded");
 	return NULL;
@@ -30,13 +33,7 @@ static const char *translate_content()
     return content;
 }
 
-int handle_client(int client)
-{
-    char buffer[1024] = {0};
-    if (read(client, buffer, sizeof(buffer)) < 0) {
-	fprintf(stderr, "[FAILED] : Failed to read buffer from client. \n");
-	return -1;
-    }
+static int render_content(int client) {
     const char *templ  = file_to_char("../index.html");
     const char *result = translate_content();
     
@@ -67,8 +64,19 @@ int handle_client(int client)
     write(client, final_html, strlen(final_html));
     
     free(final_html);
-    close(client);
     free(html);
+    return 0;
+}
+
+int handle_client(int client)
+{
+    char buffer[1024] = {0};
+    if (read(client, buffer, sizeof(buffer)) < 0) {
+	fprintf(stderr, "[FAILED] : Failed to read buffer from client. \n");
+	return -1;
+    }
+    render_content(client);
+    close(client);
     return 0;
 }
 
@@ -110,7 +118,6 @@ int main(int argv, char *argc[])
 	    if (errno == EINTR) continue;
 	    else { perror("accept"); break; }
 	}
-	
 	if (handle_client(client) == -1) {
 	    break;
 	}
