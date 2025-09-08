@@ -9,11 +9,12 @@ I don't even know if the current application can be named a "static website gene
 
 ```bash
 
+ > chmod +x ./build.sh ./run.sh
  > ./build.sh
 
 ```
 
-And then open the local address http://localhost:4242 in your browser.
+And follow the messages. So then, open the local address http://localhost:4242 in your browser.
 
 ## TODO list
 

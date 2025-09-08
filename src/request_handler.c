@@ -12,7 +12,7 @@
 #include "./utils/str.h"
 #include "./utils/os.h"
 
-#define CURRENT_FILE "../moc_project/main.rd" // for test purposes.
+#define CURRENT_FILE "../../moc_project/main.rd" // for test purposes.
 #define BUFFER_SIZE 1024
 
 static const char *translate_content()
@@ -31,7 +31,7 @@ static const char *translate_content()
 }
 
 static char *render_content() {
-    const char *templ  = file_to_char("../index.html");
+    const char *templ  = file_to_char("../../index.html");
     const char *result = translate_content();
     
     if (templ == NULL || result == NULL) {

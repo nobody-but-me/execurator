@@ -1,16 +1,26 @@
 
-#!/bin/sh -eu
+#!/usr/bin/env -eu
 
-# building project files.
+echo -e "[CONFIG]: Are you generating ninja files? (y or n)(DEFAULT: n)"
+read -p " > " build
+echo -e "[CONFIG]: Do you want to run the project right after building it? (y or n)(DEFAULT: y)"
+read -p " > " run
 
-echo "[INFO] : Creating build folder if it does not exist."
-mkdir -p build
-cd build
+echo -e "[INFO]: Creating build folder if not exists..."
+mkdir -p ./build && cd ./build
 
-echo "[INFO] : Compiling C files."
-# That's becoming unbearable.
-gcc -std=c99 -o ./out ../src/main.c ../src/parser.c ../src/request_handler.c ../src/server.c ../src/socket.c ../src/utils/str.c ../src/utils/os.c
+if [ "$build" = "y" ]; then
+    echo -e "[INFO]: Generating Ninja files..."
+    cmake .. -G Ninja
+fi
 
-echo "[INFO] : Running."
-./out && cd ..
+echo -e "[INFO]: Building..."
+ninja
+
+cd ..
+
+if  [ "$run" != "n" ]; then
+    echo -e "\n--------------------------------------------------"
+    ./run.sh
+fi
 
