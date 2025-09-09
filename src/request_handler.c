@@ -31,6 +31,7 @@ static const char *translate_content()
 	printf("[INFO] : %s\n", directory_entry->d_name);
     }
     printf("\n--------------------------------------------------\n\n");
+    closedir(directory);
     
     char *file = load_file(CURRENT_FILE);
     if (!file) {

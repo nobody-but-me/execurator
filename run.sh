@@ -1,8 +1,8 @@
 
 #!/usr/bin/env bash
 
-if [ "$(type -t ./build/bin/carol)" = "file" ]; then
-    echo -e "\n[INFO]: Running..."
+if [ -f ./build/bin/carol ]; then
+    echo "\n[INFO]: RUNNING..."
     
     cd ./build/bin/
     
@@ -10,5 +10,5 @@ if [ "$(type -t ./build/bin/carol)" = "file" ]; then
     
     cd ..
 else
-    echo -e "[FAILED]: Application could not be ran: executable does not exist or contains error(s). \n"
+    echo "[ERROR]: COULD NOT RUN ENGINE: EXECUTABLE DOES NOT EXIST OR HAS SOME ERROR. \n"
 fi
