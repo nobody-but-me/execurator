@@ -128,7 +128,7 @@ char *lexer(const char *tmp)
 	    snprintf(_new, length, "<div class='center'><img src='%s'/></div>", main->value);
 	}
 	else if (main->type == TYPE_LINK) {
-	    const char *tag = "<div class='center'><a href='' target='_blank'></a></div>";
+	    const char *tag = "<div class='center'><a href=''></a></div>";
 	    
 	    const char *link  = strtok(main->value, "|");
 	    const char *value = strtok(NULL, "|");
@@ -136,14 +136,13 @@ char *lexer(const char *tmp)
 	    size_t length = (strlen(link) + strlen(value) + strlen(tag) + 1);
 	    _new = (char*)malloc(length);
 	    
-	    snprintf(_new, length, "<a href='%s' target='_blank'>%s</a>", link, value);
+	    snprintf(_new, length, "<a href='%s'>%s</a>", link, value);
 	}
 	size_t total_length = (strlen(_old) + strlen(_new) + 1);
 	content = (char*)malloc(total_length);
 	snprintf(content, total_length, "%s%s", _old, _new);
 	main = parse(&tmp);
     }
-    // printf("\n%s\n\n", content);
     free(main);
     return content;
 }

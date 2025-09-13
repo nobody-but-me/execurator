@@ -9,4 +9,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at sapien nec
 [para]
 [link=https://asgooffeeasme.neocities.org] my other personal website! [link]
 [para][para]
+[link=./test.html] another page [link]
+[para][para]
 [image]https://asgooffeeasme.neocities.org/assets/writing-room-image-If0Uf6ww.webp[image]

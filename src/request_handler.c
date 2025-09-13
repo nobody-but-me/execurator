@@ -17,7 +17,6 @@
 #define CURRENT_FILE CURRENT_PROJECT_FOLDER"main.rd"
 #define BUFFER_SIZE 1024
 
-
 static const char *get_filename_ext(const char *filename) {
     const char *dot = strrchr(filename, '.');
     if(!dot || dot == filename) return "";
@@ -59,13 +58,11 @@ static int render_content()
 	fprintf(stderr, "[FAILED] : Porject folder could not be opened.\n");
 	return -1;
     }
-    printf("\n--------------------------------------------------\n\n");
     while ((directory_entry = readdir(directory)) != NULL) {
 	const char *file_ext = get_filename_ext(directory_entry->d_name);
 	
 	if (strcmp(file_ext, "rd") == 0) {
-	    printf("[INFO] : %s\n", directory_entry->d_name);
-	    
+	    // printf("[INFO] : %s\n", directory_entry->d_name);
 	    const char *templ  = file_to_char("../../index.html");
 	    size_t file_path_length = strlen(CURRENT_PROJECT_FOLDER) + strlen(directory_entry->d_name) + 1;
 	    char *file_path;
@@ -87,16 +84,13 @@ static int render_content()
 	    
 	    size_t length = strlen(CURRENT_PROJECT_FOLDER"bin/") + strlen(filename) + strlen(".html") + 1;
 	    char *new_file_path;
-	    new_file_path = (char*)malloc(length);
-	    if (new_file_path == NULL) {
+	    if ((new_file_path = (char*)malloc(length)) == NULL) {
 		fprintf(stderr, "[FAILED] : Failed at allocating memory into filepath string.\n");
 		return -1;
 	    }
 	    snprintf(new_file_path, length, "%s%s.html", CURRENT_PROJECT_FOLDER"bin/", filename);
-	    
 	    FILE *new_html;
-	    new_html = fopen(new_file_path, "w");
-	    if (new_html == NULL) {
+	    if ((new_html = fopen(new_file_path, "w")) == NULL) {
 		fprintf(stderr, "[FAILED] : New html script file could not be created.\n");
 		return -1;
 	    }
@@ -106,7 +100,6 @@ static int render_content()
 	    continue;
 	}
     }
-    printf("\n--------------------------------------------------\n\n");
     closedir(directory);
     return 0;
 }
