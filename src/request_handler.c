@@ -15,7 +15,6 @@
 #include "./utils/os.h"
 
 #define CURRENT_PROJECT_FOLDER "../../moc_project/"
-#define CURRENT_FILE CURRENT_PROJECT_FOLDER"main.rd"
 #define BUFFER_SIZE 1024
 
 static const char *get_filename_ext(const char *filename) {
@@ -62,7 +61,6 @@ static int render_content()
 	const char *file_ext = get_filename_ext(directory_entry->d_name);
 	
 	if (strcmp(file_ext, "rd") == 0) {
-	   // printf("[INFO] : %s\n", directory_entry->d_name);
 	    size_t file_path_length = strlen(CURRENT_PROJECT_FOLDER) + strlen(directory_entry->d_name) + 1;
 	    char *file_path;
 	    if ((file_path = (char*)malloc(file_path_length)) == NULL) { fprintf(stderr, "[FAILED] Failed to allocated memory blah blah blah.\n"); return -1; }
@@ -108,16 +106,14 @@ int handle_client(int socket)
     char buffer[BUFFER_SIZE] = { 0 };
     read(socket, buffer, BUFFER_SIZE);
     
-    char method[256], path[BUFFER_SIZE];
+    char method[8], path[BUFFER_SIZE];
     sscanf(buffer, "%s %s", method, path);
     
     const char *page = strcmp(path, "/") == 0 ? "main.html" : path + 1;
     char file_path[BUFFER_SIZE];
     
     // TODO: Add support to favicons.
-    if (strcmp(page, "favicon.ico") == 0) {
-	return 0;
-    }
+    if (strcmp(page, "favicon.ico") == 0) return 0;
     
     if ((render_content()) == -1) goto ERROR;
     snprintf(file_path, sizeof(file_path), CURRENT_PROJECT_FOLDER"bin/%s", page);
